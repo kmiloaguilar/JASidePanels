@@ -48,6 +48,7 @@
 		9568132A16373ACB007B3602 /* JADebugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JADebugViewController.m; path = Demo/JADebugViewController.m; sourceTree = "<group>"; };
 		95BCC45815F081130009F1DA /* UIViewController+JASidePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+JASidePanel.h"; path = "Source/UIViewController+JASidePanel.h"; sourceTree = "<group>"; };
 		95BCC45915F081130009F1DA /* UIViewController+JASidePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+JASidePanel.m"; path = "Source/UIViewController+JASidePanel.m"; sourceTree = "<group>"; };
+		ADF864B120A70E8F00FA69F0 /* JASidePanels.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = JASidePanels.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +69,7 @@
 		9561ACA2151286EE005889C6 = {
 			isa = PBXGroup;
 			children = (
+				ADF864B120A70E8F00FA69F0 /* JASidePanels.podspec */,
 				5C49572616C555F700250332 /* Default-568h@2x.png */,
 				9561ACB7151286EE005889C6 /* JASidePanels */,
 				9561ACB0151286EE005889C6 /* Frameworks */,
