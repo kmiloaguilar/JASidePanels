@@ -227,11 +227,13 @@ static char ja_kvoContext;
 
 #endif
 
-- (void)willAnimateRotationToInterfaceOrientation:(__unused UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    self.centerPanelContainer.frame = [self _adjustCenterFrame];	
-    [self _layoutSideContainers:YES duration:duration];
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+
+    self.centerPanelContainer.frame = [self _adjustCenterFrame];
+    [self _layoutSideContainers:YES duration:0.0];
     [self _layoutSidePanels];
-    [self styleContainer:self.centerPanelContainer animate:YES duration:duration];
+    [self styleContainer:self.centerPanelContainer animate:YES duration:0.0];
     if (self.centerPanelHidden) {
         CGRect frame = self.centerPanelContainer.frame;
         frame.origin.x = self.state == JASidePanelLeftVisible ? self.centerPanelContainer.frame.size.width : -self.centerPanelContainer.frame.size.width;
@@ -370,11 +372,11 @@ static char ja_kvoContext;
             if (self.bounceOnCenterPanelChange) {
                 // first move the centerPanel offscreen
                 CGFloat x = (previousState == JASidePanelLeftVisible) ? self.view.bounds.size.width : -self.view.bounds.size.width;
-                _centerPanelRestingFrame.origin.x = x;
+                self->_centerPanelRestingFrame.origin.x = x;
             }
-            self.centerPanelContainer.frame = _centerPanelRestingFrame;
+            self.centerPanelContainer.frame = self->_centerPanelRestingFrame;
         } completion:^(__unused BOOL finished) {
-            [self _swapCenter:previous previousState:previousState with:_centerPanel];
+            [self _swapCenter:previous previousState:previousState with:self->_centerPanel];
             [self _showCenterPanel:YES bounce:NO];
         }];
     }
@@ -463,7 +465,7 @@ static char ja_kvoContext;
         if (translate.x > 0 && ! self.allowLeftSwipe) {
             return NO;
         }
-        BOOL possible = translate.x != 0 && ((fabsf(translate.y) / fabsf(translate.x)) < 1.0f);
+        BOOL possible = translate.x != 0 && ((fabs(translate.y) / fabs(translate.x)) < 1.0f);
         if (possible && ((translate.x > 0 && self.leftPanel) || (translate.x < 0 && self.rightPanel))) {
             return YES;
         }
@@ -633,7 +635,7 @@ static char ja_kvoContext;
             return movement <= -minimum;
 		}
         case JASidePanelCenterVisible: {
-            return fabsf(movement) >= minimum;
+            return fabs(movement) >= minimum;
 		}
         case JASidePanelRightVisible: {
             return movement >= minimum;
@@ -726,8 +728,8 @@ static char ja_kvoContext;
 #pragma mark - Animation
 
 - (CGFloat)_calculatedDuration {
-    CGFloat remaining = fabsf(self.centerPanelContainer.frame.origin.x - _centerPanelRestingFrame.origin.x);	
-    CGFloat max = _locationBeforePan.x == _centerPanelRestingFrame.origin.x ? remaining : fabsf(_locationBeforePan.x - _centerPanelRestingFrame.origin.x);
+    CGFloat remaining = fabs(self.centerPanelContainer.frame.origin.x - _centerPanelRestingFrame.origin.x);
+    CGFloat max = _locationBeforePan.x == _centerPanelRestingFrame.origin.x ? remaining : fabs(_locationBeforePan.x - _centerPanelRestingFrame.origin.x);
     return max > 0.0f ? self.maximumAnimationDuration * (remaining / max) : self.maximumAnimationDuration;
 }
 
@@ -741,7 +743,7 @@ static char ja_kvoContext;
     
     CGFloat duration = [self _calculatedDuration];
     [UIView animateWithDuration:duration delay:0.0f options:UIViewAnimationOptionCurveLinear|UIViewAnimationOptionLayoutSubviews animations:^{
-        self.centerPanelContainer.frame = _centerPanelRestingFrame;
+        self.centerPanelContainer.frame = self->_centerPanelRestingFrame;
         [self styleContainer:self.centerPanelContainer animate:YES duration:duration];
         if (self.style == JASidePanelMultipleActive || self.pushesSidePanels) {
             [self _layoutSideContainers:NO duration:0.0f];
@@ -758,12 +760,12 @@ static char ja_kvoContext;
             }
             // animate the bounce
             [UIView animateWithDuration:self.bounceDuration delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-                CGRect bounceFrame = _centerPanelRestingFrame;
+                CGRect bounceFrame = self->_centerPanelRestingFrame;
                 bounceFrame.origin.x += bounceDistance;
                 self.centerPanelContainer.frame = bounceFrame;
             } completion:^(__unused BOOL finished2) {
                 [UIView animateWithDuration:self.bounceDuration delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
-                    self.centerPanelContainer.frame = _centerPanelRestingFrame;				
+                    self.centerPanelContainer.frame = self->_centerPanelRestingFrame;
                 } completion:completion];
             }];
         } else if (completion) {
@@ -1020,7 +1022,7 @@ static char ja_kvoContext;
                 }
             } completion:^(__unused BOOL finished) {
                 // need to double check in case the user tapped really fast
-                if (_centerPanelHidden) {
+                if (self->_centerPanelHidden) {
                     [self _hideCenterPanel];
                 }
             }];
